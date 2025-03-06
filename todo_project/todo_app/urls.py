@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path("", views.task_list, name="task-list"),
+    path("done/<int:task_id>/", views.mark_as_done, name="mark-as-done"),
     path("add", views.add_task, name="add-task"),
 ]

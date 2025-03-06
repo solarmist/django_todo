@@ -2,9 +2,16 @@
 <ul>
     {% for task in tasks %}
     <li>
-        {% if task.completed %}✅<s>{% else %}❌{% endif %}
-            {{ task.title }}
-            {% if task.completed %}{{task.completed_on}} </s>{% endif %}
+        <form method="post" action="{% url 'mark-as-done' task.id %}">
+            {% csrf_token %}
+            <label>
+                <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed %}checked{% endif %}
+                    onchange="this.form.submit()">
+                {% if task.completed %}<s> {{ task.title }} ({{task.completed_on}}) </s>
+                {% else %} {{ task.title }}
+                {% endif %}
+            </label>
+        </form>
     </li>
     {% endfor %}
 </ul>
