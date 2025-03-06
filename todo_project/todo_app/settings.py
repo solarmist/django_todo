@@ -52,6 +52,12 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "todo_app.urls"
 
+# Authentication settings
+LOGIN_URL = "login"  # URL to redirect if not logged in
+LOGIN_REDIRECT_URL = "/"  # URL to redirect after login
+LOGOUT_REDIRECT_URL = "login"  # URL to redirect after logout
+
+
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

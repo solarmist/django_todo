@@ -4,9 +4,9 @@
     <div>
         <label for="id_title">Title:</label>
         {{ form.title }}
-        {% if form.title.errors %}
+        {% if form.errors %}
         <div style="color: red;">
-            {% for error in form.title.errors %}
+            {% for error in form.errors %}
             <p>{{ error }}</p>
             {% endfor %}
         </div>

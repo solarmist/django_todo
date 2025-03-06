@@ -20,6 +20,9 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    path("register", views.register, name="register"),
+    path("login", views.user_login, name="login"),
+    path("logout", views.user_logout, name="logout"),
     path("", views.task_list, name="task-list"),
     path("done/<int:task_id>/", views.mark_as_done, name="mark-as-done"),
     path("add", views.add_task, name="add-task"),

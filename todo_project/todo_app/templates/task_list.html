@@ -1,4 +1,6 @@
 <h1>To-Do List</h1>
+<p>Logged in as {{ user.username }} | <a href="{% url 'logout' %}">Logout</a></p>
+
 <ul>
     {% for task in tasks %}
     <li>
@@ -7,7 +9,7 @@
             <label>
                 <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed %}checked{% endif %}
                     onchange="this.form.submit()">
-                {% if task.completed %}<s> {{ task.title }} ({{task.completed_on}}) </s>
+                {% if task.completed_on %}<s> {{ task.title }} (Completed: {{task.completed_on}}) </s>
                 {% else %} {{ task.title }}
                 {% endif %}
             </label>
