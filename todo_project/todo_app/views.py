@@ -15,12 +15,10 @@ def register(request):
             password = request.POST["password1"]
             user = authenticate(request, username=username, password=password)
             login(request, user)
-
             return redirect("task-list")
-        else:
-            print(form.errors)
-    else:
-        form = RegisterForm()
+        print(form.errors)
+
+    form = RegisterForm()
     return render(request, "register.html", {"form": form})
 
 
@@ -48,13 +46,13 @@ def task_list(request):
 
 @login_required
 def mark_as_done(request, task_id):
-    task = get_object_or_404(Task, id=task_id, user=request.user)
-    if task.completed_on is not None:
-        task.completed_on = None
-    else:
-        task.completed_on = timezone.now()
-    print(task)
-    task.save()
+    if request.method == "POST":
+        task = get_object_or_404(Task, id=task_id, user=request.user)
+        if task.completed_on is not None:
+            task.completed_on = None
+        else:
+            task.completed_on = timezone.now()
+        task.save()
     return redirect("task-list")
 
 
@@ -65,11 +63,8 @@ def add_task(request):
         task.instance.user = request.user
         if task.is_valid():
             task.save()
-        else:
-            print(task.errors)
+            return redirect("task-list")
+        print(task.errors)
 
-        return redirect("task-list")
-    else:
-        form = TaskForm()
-
+    form = TaskForm()
     return render(request, "add_task.html", {"form": form})
