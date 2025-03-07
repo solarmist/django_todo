@@ -1,0 +1,40 @@
+/* Header Bar Styles */
+.header-bar {
+    background-color: #f0f0f0;
+    padding: 10px;
+    border-bottom: 2px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Logo and Title Styles */
+.header-bar img {
+    margin-right: 10px;
+}
+
+.header-bar h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #333;
+}
+
+/* Link Styles */
+.header-bar a {
+    text-decoration: none;
+    color: #ff4500;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ff4500;
+    margin-right: 10px;
+}
+
+.header-bar a:last-child {
+    margin-right: 0;
+}
+
+/* User Info Styles */
+.header-bar .user-info {
+    color: #333;
+    margin-right: 15px;
+}

@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
 <h1>Login</h1>
 {% if error %}
 <p style="color: red;">{{ error }}</p>
@@ -13,4 +16,4 @@
     <br>
     <button type="submit">Login</button>
 </form>
-<a href="{% url 'register' %}">Don't have an account? Register here.</a>
+{% endblock %}

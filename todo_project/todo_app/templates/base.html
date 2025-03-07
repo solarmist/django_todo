@@ -1,0 +1,48 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="{% static 'todo_app/icons/favicon.png' %}">
+    <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="{% static 'todo_app/icons/favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'todo_app/css/style.css' %}">
+
+    <title>My Django To-Do App</title>
+</head>
+
+<body>
+
+    <div class="header-bar">
+        <!-- Logo and Title -->
+        <div style="display: flex; align-items: center;">
+            <img src="{% static 'todo_app/icons/favicon.png' %}" alt="Fox icon" width="32" height="32">
+            <h1>Fox To-Do App</h1>
+        </div>
+
+        <!-- User Info and Links -->
+        <div style="display: flex; align-items: center;">
+            {% if user.is_authenticated %}
+            <span class="user-info">
+                Logged in as <strong>{{ user.username }}</strong>
+            </span>
+            <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+            {% if request.path != '/login/' %}
+            <a href="{% url 'login' %}">Login</a>
+            {% endif %}
+            {% if request.path != '/register/' %}
+            <a href="{% url 'register' %}">Register</a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    {% block content %}
+    {% endblock %}
+</body>
+
+</html>
