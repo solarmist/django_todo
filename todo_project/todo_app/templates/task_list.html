@@ -9,8 +9,8 @@
         <form method="post" action="{% url 'mark-as-done' task.id %}">
             {% csrf_token %}
             <label>
-                <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed %}checked{% endif %}
-                    onchange="this.form.submit()">
+                <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed_on is not None %}
+                    checked {% endif %} onchange="this.form.submit()">
                 {% if task.completed_on %}<s> {{ task.title }} (Completed: {{task.completed_on}}) </s>
                 {% else %} {{ task.title }}
                 {% endif %}
