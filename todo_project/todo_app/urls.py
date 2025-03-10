@@ -17,14 +17,21 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from django.conf import settings
+from django.conf.urls.static import static
 from . import views
 
 urlpatterns = [
-    path("register", views.register, name="register"),
-    path("login", views.user_login, name="login"),
-    path("logout", views.user_logout, name="logout"),
+    path("register/", views.register, name="register"),
+    path("login/", views.user_login, name="login"),
+    path("logout/", views.user_logout, name="logout"),
     path("", views.task_list, name="task-list"),
     path("done/<int:task_id>/", views.mark_as_done, name="mark-as-done"),
-    path("add", views.add_task, name="add-task"),
+    path("add-category/", views.add_category, name="add-category"),
+    path("add/", views.add_task, name="add-task"),
     path("admin/", admin.site.urls),
 ]
+
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

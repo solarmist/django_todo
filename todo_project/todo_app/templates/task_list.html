@@ -1,13 +1,32 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>To-Do List</h1>
 
+<p>Filter by Category:</p>
+<ul>
+    {% for category in categories %}
+    <li>
+        <img src="{{ category.icon_url }}" alt="{{ category.name }} icon" width="24" height="24">
+        <a href="?category={{ category.id }}">{{ category.name }}</a>
+        {% if category.owner %}
+        (Custom)
+        {% else %}
+        (Default)
+        {% endif %}
+    </li>
+    {% endfor %}
+</ul>
+
+<h1>To-Do List</h1>
 <ul>
     {% for task in tasks %}
     <li>
         <form method="post" action="{% url 'mark-as-done' task.id %}">
             {% csrf_token %}
+            {{category.icon_url}}
+            {% if task.category is not None %}
+            <img src="{{ task.category.icon_url }}" alt="{{ task.category.icon_url }} icon" width="24" height="24">
+            {% endif %}
             <label>
                 <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed_on is not None %}
                     checked {% endif %} onchange="this.form.submit()">
@@ -20,4 +39,5 @@
     {% endfor %}
 </ul>
 <a href="{% url 'add-task' %}">Add New Task</a>
+<a href="{% url 'add-category' %}">Add New Category</a>
 {% endblock %}

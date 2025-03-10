@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<h2>Add New Category</h2>
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <p>
+        {{ form.name.label_tag }}<br>
+        {{ form.name }}
+    </p>
+    <p>
+        {{ form.icon.label_tag }}<br>
+        {{ form.icon }}<br>
+        <small>Upload a custom icon if you want</small>
+    </p>
+    <p>
+        <label for="id_default_icon">Or Choose a Default Icon:</label><br>
+        {{ form.default_icon }}
+    </p>
+    <button type="submit"
+        style="background-color: #ff4500; color: #fff; padding: 5px 10px; border: none; border-radius: 5px;">
+        Add Category
+    </button>
+</form>
+{% endblock %}

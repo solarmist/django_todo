@@ -2,21 +2,21 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Task
-from .forms import TaskForm, RegisterForm
+from .models import Task, Category
+from .forms import TaskForm, RegisterForm, CategoryForm
 
 
 def register(request):
     if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
+        register = RegisterForm(request.POST)
+        if register.is_valid():
+            register.save()
             username = request.POST["username"]
             password = request.POST["password1"]
             user = authenticate(request, username=username, password=password)
             login(request, user)
             return redirect("task-list")
-        print(form.errors)
+        print(register.errors)
 
     form = RegisterForm()
     return render(request, "register.html", {"form": form})
@@ -41,7 +41,8 @@ def user_logout(request):
 @login_required
 def task_list(request):
     tasks = Task.objects.filter(user=request.user)
-    return render(request, "task_list.html", {"tasks": tasks})
+    categories = Category.objects.all()
+    return render(request, "task_list.html", {"tasks": tasks, "categories": categories})
 
 
 @login_required
@@ -68,3 +69,20 @@ def add_task(request):
 
     form = TaskForm()
     return render(request, "add_task.html", {"form": form})
+
+
+@login_required
+def add_category(request):
+    if request.method == "POST":
+        category = CategoryForm(request.POST, request.FILES)
+        if request.user.is_superuser:
+            category.instance.owner = None
+        else:
+            category.instance.owner = request.user
+        if category.is_valid():
+            category.save()
+            return redirect("task-list")
+        print(category.errors)
+
+    form = CategoryForm()
+    return render(request, "add_category.html", {"form": form})

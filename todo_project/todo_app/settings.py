@@ -50,7 +50,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
+# This configures the django site to be a single app site
 ROOT_URLCONF = "todo_app.urls"
+# ROOT_URLCONF = "urls" # For a multi-app site
 
 # Authentication settings
 LOGIN_URL = "login"  # URL to redirect if not logged in
@@ -124,6 +126,14 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+
+# Media files (user-uploaded files)
+# https://docs.djangoproject.com/en/5.1/topics/files/
+MEDIA_URL = "media/"
+# This isn't a good practice, but for the sake of simplicity
+# we will use the same folder for media files inside the project
+MEDIA_ROOT = BASE_DIR / "uploads" / "category_icons/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
