@@ -6,8 +6,8 @@ from django.db import migrations
 def create_default_categories(apps, schema_editor):
     Category = apps.get_model("todo_app", "Category")
     Category.objects.create(name="Work", icon="icons/icon_1.png", owner=None)
-    Category.objects.create(name="Personal", icon="icons/icon_1.png", owner=None)
-    Category.objects.create(name="Shopping", icon="icons/icon_1.png", owner=None)
+    Category.objects.create(name="Personal", icon="icons/icon_2.png", owner=None)
+    Category.objects.create(name="Shopping", icon="icons/icon_3.png", owner=None)
 
 
 class Migration(migrations.Migration):

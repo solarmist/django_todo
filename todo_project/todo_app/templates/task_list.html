@@ -3,16 +3,6 @@
 {% block content %}
 {% load static %}
 
-{% if messages %}
-<div class="toast-container">
-    {% for message in messages %}
-    <div class="toast">
-        <p>{{ message }}</p>
-    </div>
-    {% endfor %}
-</div>
-{% endif %}
-<script src="{% static 'todo_app/js/toast.js' %}"></script>
 
 <p>Filter by Category:</p>
 <ul>

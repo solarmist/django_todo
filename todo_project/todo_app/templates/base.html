@@ -23,6 +23,7 @@
             <h1>Fox To-Do App</h1>
         </div>
 
+
         <!-- User Info and Links -->
         <div style="display: flex; align-items: center;">
             {% if user.is_authenticated %}
@@ -40,6 +41,18 @@
             {% endif %}
         </div>
     </div>
+
+    <!-- Message Toast -->
+    {% if messages %}
+    <div class="toast-container">
+        {% for message in messages %}
+        <div class="toast">
+            <p>{{ message }}</p>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    <script src="{% static 'todo_app/js/toast.js' %}"></script>
 
     {% block content %}
     {% endblock %}
