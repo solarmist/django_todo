@@ -38,3 +38,29 @@
     color: #333;
     margin-right: 15px;
 }
+.toast-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 9999;
+}
+
+.toast {
+    background-color: #fffbe6;
+    border: 1px solid #ffd966;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    animation: fade-in-out 4s ease-in-out forwards;
+}
+
+@keyframes fade-in-out {
+    0% {opacity: 0;}
+
+    10% {opacity: 1;}
+
+    90% {opacity: 1;}
+
+    100% {opacity: 0;}
+}
