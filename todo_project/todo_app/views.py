@@ -58,9 +58,24 @@ def user_logout(request):
 
 @login_required
 def task_list(request):
+    category = Category.objects.filter(name=request.GET.get("category")).first()
+    show_completed = request.GET.get("completed") == "on"
     tasks = Task.objects.filter(user=request.user)
     categories = Category.objects.all()
-    return render(request, "task_list.html", {"tasks": tasks, "categories": categories})
+
+    # Apply category filter
+    if category is not None:
+        tasks = tasks.filter(category=category)
+
+    # Apply completed filter
+    if not show_completed:
+        tasks = tasks.filter(completed_on__isnull=True)
+
+    return render(
+        request,
+        "task_list.html",
+        {"tasks": tasks, "categories": categories},
+    )
 
 
 @login_required

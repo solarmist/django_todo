@@ -3,21 +3,29 @@
 {% block content %}
 {% load static %}
 
+<form method="GET" action="{% url 'task-list' %}" class="filter-form">
+    <label for="category">Filter by Category:</label>
 
-<p>Filter by Category:</p>
-<ul>
-    {% for category in categories %}
-    <li>
-        <img src="{{ category.icon_url }}" alt="{{ category.name }} icon" width="24" height="24">
-        <a href="?category={{ category.id }}">{{ category.name }}</a>
-        {% if category.owner %}
-        (Custom)
-        {% else %}
-        (Default)
-        {% endif %}
-    </li>
-    {% endfor %}
-</ul>
+    <select name="category" id="category">
+        <option value="">All Categories</option>
+        {% for category in categories %}
+        <option value="{{ category.name }}" {% if request.GET.category == category.name %} selected {% endif %}>
+            <img src="{{ category.icon_url }}" alt="{{ category.name }} icon" width="24" height="24">
+            {{ category.name }}
+            {% if category.owner %}
+            (Custom)
+            {% else %}
+            (Default)
+            {% endif %}
+        </option>
+        {% endfor %}
+    </select>
+    <label for="completed">Show Completed:</label>
+    <input type="checkbox" name="completed" id="completed" {% if request.GET.completed %}checked{% endif %}>
+
+    <button type="submit">Apply Filters</button>
+
+</form>
 
 <h1>To-Do List</h1>
 <ul>
