@@ -20,8 +20,8 @@
         </option>
         {% endfor %}
     </select>
-    <label for="completed">Show Completed:</label>
-    <input type="checkbox" name="completed" id="completed" {% if request.GET.completed %}checked{% endif %}>
+    <label for="hide">Hide Completed:</label>
+    <input type="checkbox" name="hide" id="completed" {% if request.GET.hide %}checked{% endif %}>
 
     <button type="submit">Apply Filters</button>
 
@@ -30,8 +30,8 @@
 <h1>To-Do List</h1>
 <ul>
     {% for task in tasks %}
-    <li>
-        <form method="post" action="{% url 'mark-as-done' task.id %}">
+    <li class="{% if task.completed_on %}completed{% endif %}">
+        <form method="post" action="{% url 'mark-as-done' task.id %}?{{ request.GET.urlencode }}">
             {% csrf_token %}
             {{category.icon_url}}
             {% if task.category is not None %}

@@ -1,9 +1,11 @@
 import random
+from urllib.parse import urlencode
 
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 from django.utils import timezone
 
 from .models import Task, Category
@@ -59,7 +61,7 @@ def user_logout(request):
 @login_required
 def task_list(request):
     category = Category.objects.filter(name=request.GET.get("category")).first()
-    show_completed = request.GET.get("completed") == "on"
+    hide_completed = request.GET.get("hide") == "on"
     tasks = Task.objects.filter(user=request.user)
     categories = Category.objects.all()
 
@@ -68,7 +70,7 @@ def task_list(request):
         tasks = tasks.filter(category=category)
 
     # Apply completed filter
-    if not show_completed:
+    if hide_completed:
         tasks = tasks.filter(completed_on__isnull=True)
 
     return render(
@@ -88,7 +90,10 @@ def mark_as_done(request, task_id):
             fortune = get_fortune()
             messages.success(request, f"Task completed! 🔮 {fortune}")
 
-    return redirect("task-list")
+    # Preserve filters from the request
+    query_params = request.GET.copy()  # Get existing query parameters
+    query_string = urlencode(query_params)  # Convert to URL format
+    return redirect(f"{reverse('task-list')}?{query_string}")
 
 
 @login_required
