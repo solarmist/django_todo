@@ -34,13 +34,13 @@
         <form method="post" action="{% url 'mark-as-done' task.id %}?{{ request.GET.urlencode }}">
             {% csrf_token %}
             {{category.icon_url}}
-            {% if task.category is not None %}
+            {% if task.category %}
             <img src="{{ task.category.icon_url }}" alt="{{ task.category.icon_url }} icon" width="24" height="24">
             {% endif %}
             <label>
                 <input type="checkbox" name="task_ids" value="{{ task.id }}" {% if task.completed_on is not None %}
                     checked {% endif %} onchange="this.form.submit()">
-                {% if task.completed_on %}<s> {{ task.title }} (Completed: {{task.completed_on}}) </s>
+                {% if task.completed_on %}<s> {{ task.title }} </s><s class="completed-time" data-timestamp="{{ task.completed_on|date:'c' }}">(Completed: {{task.completed_on|date:'c' }}) </s>
                 {% else %} {{ task.title }}
                 {% endif %}
             </label>
