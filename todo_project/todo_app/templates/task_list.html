@@ -46,8 +46,11 @@
             </label>
         </form>
     </li>
+    {% empty %}
+        <p>No tasks found.</p>
     {% endfor %}
+
 </ul>
-<a href="{% url 'add-task' %}">Add New Task</a>
-<a href="{% url 'add-category' %}">Add New Category</a>
+<a class="btn" href="{% url 'add-task' %}">Add New Task</a>
+<a class="btn" href="{% url 'add-category' %}">Add New Category</a>
 {% endblock %}

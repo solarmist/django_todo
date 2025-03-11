@@ -1,3 +1,100 @@
+/* 🎨 General Styles */
+body {
+    font-family: "Arial", sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+/* 🏷️ Header */
+h1 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #444;
+}
+
+/* 📋 Task List */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    background-color: white;
+    padding: 10px;
+    margin: 10px auto;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* ✅ Completed Tasks */
+li.completed {
+    text-decoration: line-through;
+    opacity: 0.6;
+}
+
+/* 📌 Buttons */
+button,
+.btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+button:hover,
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* 🎛️ Filters */
+.filter-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-form select,
+.filter-form input,
+.filter-form button {
+    padding: 5px;
+    font-size: 14px;
+}
+
+/* 🎭 Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #222;
+        color: #ddd;
+    }
+
+    li {
+        background-color: #333;
+        color: white;
+    }
+
+    button,
+    .btn {
+        background-color: #28a745;
+    }
+
+    button:hover,
+    .btn:hover {
+        background-color: #218838;
+    }
+}
 /* Header Bar Styles */
 .header-bar {
     background-color: #f0f0f0;
