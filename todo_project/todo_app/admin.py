@@ -3,7 +3,15 @@ from django.contrib.admin import DateFieldListFilter, RelatedOnlyFieldListFilter
 from .models import Task, Category
 
 
+class TaskInline(admin.TabularInline):  # or admin.StackedInline
+    model = Task
+    extra = 1  # How many empty forms to show
+
+
 class CategoryAdmin(admin.ModelAdmin):
+    inlines = [TaskInline]
+    search_fields = ("name", "owner__username")
+
     list_display = ("name", "is_default", "owner", "icon_url")
     list_filter = ("owner",)
 
@@ -15,6 +23,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class TaskAdmin(admin.ModelAdmin):
+    search_fields = ("title", "category__name")
+    autocomplete_fields = ["category"]  # Enables a dropdown search
+
     list_display = ("user", "title", "category", "completed_on", "created_at")
     list_filter = (
         ("user", RelatedOnlyFieldListFilter),

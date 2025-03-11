@@ -19,16 +19,24 @@ from django.contrib import admin
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
+from .views import (
+    TaskListView,
+    TaskUpdateView,
+    CategoryCreateView,
+    TaskCreateView,
+    RegisterView,
+    CustomLoginView,
+    CustomLogoutView,
+)
 
 urlpatterns = [
-    path("register/", views.register, name="register"),
-    path("login/", views.user_login, name="login"),
-    path("logout/", views.user_logout, name="logout"),
-    path("", views.task_list, name="task-list"),
-    path("done/<int:task_id>/", views.mark_as_done, name="mark-as-done"),
-    path("add-category/", views.add_category, name="add-category"),
-    path("add/", views.add_task, name="add-task"),
+    path("register/", RegisterView.as_view(), name="register"),
+    path("login/", CustomLoginView.as_view(), name="login"),
+    path("logout/", CustomLogoutView.as_view(), name="logout"),
+    path("", TaskListView.as_view(), name="task-list"),
+    path("done/<int:pk>/", TaskUpdateView.as_view(), name="mark-as-done"),
+    path("add-category/", CategoryCreateView.as_view(), name="add-category"),
+    path("add/", TaskCreateView.as_view(), name="add-task"),
     path("admin/", admin.site.urls),
 ]
 

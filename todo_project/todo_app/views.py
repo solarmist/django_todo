@@ -1,12 +1,12 @@
 import random
-from urllib.parse import urlencode
 
-from django.shortcuts import get_object_or_404, render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.urls import reverse
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
+from django.http import HttpResponseRedirect
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
+from django.views.generic import CreateView, ListView, UpdateView
 
 from .models import Task, Category
 from .forms import TaskForm, RegisterForm, CategoryForm
@@ -26,101 +26,95 @@ def get_fortune():
     return random.choice(SILLY_FORTUNES)
 
 
-def register(request):
-    if request.method == "POST":
-        register = RegisterForm(request.POST)
-        if register.is_valid():
-            register.save()
-            username = request.POST["username"]
-            password = request.POST["password1"]
-            user = authenticate(request, username=username, password=password)
-            login(request, user)
-            return redirect("task-list")
-        print(register.errors)
-
-    form = RegisterForm()
-    return render(request, "register.html", {"form": form})
+class RegisterView(CreateView):
+    form_class = RegisterForm
+    template_name = "register.html"
+    success_url = reverse_lazy("login")
 
 
-def user_login(request):
-    if request.method == "POST":
-        username = request.POST["username"]
-        password = request.POST["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect("task-list")
-    return render(request, "login.html")
+class CustomLoginView(LoginView):
+    template_name = "login.html"
+    redirect_authenticated_user = True
 
 
-def user_logout(request):
-    logout(request)
-    return redirect("login")
+class CustomLogoutView(LogoutView):
+    next_page = reverse_lazy("login")
 
 
-@login_required
-def task_list(request):
-    category = Category.objects.filter(name=request.GET.get("category")).first()
-    hide_completed = request.GET.get("hide") == "on"
-    tasks = Task.objects.filter(user=request.user)
-    categories = Category.objects.all()
+class TaskListView(LoginRequiredMixin, ListView):
+    model = Task
+    template_name = "task_list.html"
+    context_object_name = "tasks"
 
-    # Apply category filter
-    if category is not None:
-        tasks = tasks.filter(category=category)
+    def get_queryset(self):
+        queryset = Task.objects.filter(user=self.request.user)
+        category_id = self.request.GET.get("category")
+        hide_completed = self.request.GET.get("hide")
 
-    # Apply completed filter
-    if hide_completed:
-        tasks = tasks.filter(completed_on__isnull=True)
+        if category_id:
+            queryset = queryset.filter(category_id=category_id)
 
-    return render(
-        request,
-        "task_list.html",
-        {"tasks": tasks, "categories": categories},
-    )
+        if hide_completed:
+            queryset = queryset.filter(completed_on__isnull=True)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["categories"] = Category.objects.filter(
+            owner=self.request.user
+        ) | Category.objects.filter(owner__isnull=True)
+        return context
 
 
-@login_required
-def mark_as_done(request, task_id):
-    if request.method == "POST":
-        task = get_object_or_404(Task, id=task_id, user=request.user)
-        task.completed_on = timezone.now() if task.completed_on is None else None
+class TaskUpdateView(LoginRequiredMixin, UpdateView):
+    model = Task
+    fields = []  # No form needed, we're just updating `completed_on`
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        task.completed_on = None if task.completed_on else timezone.now()
         task.save()
         if task.completed_on:
             fortune = get_fortune()
             messages.success(request, f"Task completed! 🔮 {fortune}")
 
-    # Preserve filters from the request
-    query_params = request.GET.copy()  # Get existing query parameters
-    query_string = urlencode(query_params)  # Convert to URL format
-    return redirect(f"{reverse('task-list')}?{query_string}")
+        # Preserve filters when redirecting
+        query_params = self.request.GET.urlencode()
+        return HttpResponseRedirect(f"{reverse('task-list')}?{query_params}")
 
 
-@login_required
-def add_task(request):
-    if request.method == "POST":
-        task = TaskForm(request.POST)
-        task.instance.user = request.user
-        if task.is_valid():
-            task.save()
-            return redirect("task-list")
-        print(task.errors)
+class TaskCreateView(LoginRequiredMixin, CreateView):
+    model = Task
+    form_class = TaskForm
+    template_name = "add_task.html"
+    success_url = reverse_lazy("task-list")
 
-    form = TaskForm()
-    return render(request, "add_task.html", {"form": form})
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
 
 
-@login_required
-def add_category(request):
-    if request.method == "POST":
-        category = CategoryForm(request.POST, request.FILES)
-        # Superusers can create sitewide categories
-        category.instance.owner = None if request.user.is_superuser else request.user
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "add_category.html"
+    success_url = reverse_lazy("task-list")
 
-        if category.is_valid():
-            category.save()
-            return redirect("task-list")
-        print(category.errors)
 
-    form = CategoryForm()
-    return render(request, "add_category.html", {"form": form})
+class CategoryCreateView(LoginRequiredMixin, CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "add_category.html"
+    success_url = reverse_lazy("task-list")  # Redirect after creation
+
+    def form_valid(self, form):
+        # If user is not a superuser, assign them as the category owner
+        if not self.request.user.is_superuser:
+            form.instance.owner = self.request.user
+        else:
+            form.instance.owner = None  # Superuser-created categories are global
+        if form.cleaned_data["icon"] is None and form.cleaned_data["default_icon"]:
+            form.instance.icon = f"icons/{form.cleaned_data['default_icon']}"
+
+        return super().form_valid(form)

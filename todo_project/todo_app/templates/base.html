@@ -24,21 +24,25 @@
         </div>
 
         <!-- User Info and Links -->
-        <div style="display: flex; align-items: center;">
+        <div style="display: flex; align-items: center;" class="auth-bar">
             {% if user.is_authenticated %}
-            <span class="user-info">
-                Logged in as <strong>{{ user.username }}</strong>
-            </span>
-            <a href="{% url 'logout' %}">Logout</a>
+                <span class="user-info">
+                    Logged in as <strong>{{ user.username }}</strong>
+                </span>
+                <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit">Logout</button>
+                </form>
             {% else %}
-            {% if request.path != '/login/' %}
-            <a href="{% url 'login' %}">Login</a>
-            {% endif %}
-            {% if request.path != '/register/' %}
-            <a href="{% url 'register' %}">Register</a>
-            {% endif %}
+                {% if request.path != '/login/' %}
+                    <a href="{% url 'login' %}" class="auth-link">Login</a>
+                {% endif %}
+                {% if request.path != '/register/' %}
+                    <a href="{% url 'register' %}" class="auth-link">Register</a>
+                {% endif %}
             {% endif %}
         </div>
+
     </div>
 
     <!-- Message Toast -->
